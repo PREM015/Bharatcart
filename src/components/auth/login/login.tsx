@@ -1,4 +1,3 @@
-// D:\code\projects\ecommerce\src\components\auth\login\login.tsx
 "use client";
 
 import { useState } from "react";
@@ -23,13 +22,21 @@ export default function LoginForm() {
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ identifier, password }),
+        body: JSON.stringify({ identifier, password, mode: "login" }),
       });
 
       const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Login failed");
+      if (!res.ok) throw new Error(data.error || "Login failed");
+
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      if (typeof window !== "undefined") {
+        (window as any).authToken = data.token;
+      }
 
       router.push("/");
+      router.refresh();
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "An unknown error occurred");
     } finally {
@@ -44,43 +51,43 @@ export default function LoginForm() {
       transition={{ duration: 0.6, ease: "easeOut" }}
       className="max-w-md w-full mx-auto"
     >
-      <div className="bg-white/80 backdrop-blur-lg shadow-2xl p-8 rounded-2xl border border-gray-200">
-        <h2 className="text-4xl font-extrabold text-center mb-3 text-gray-900">
+      <div className="bg-white shadow-lg p-8 rounded-2xl border border-gray-200">
+        <h2 className="text-3xl font-bold text-center mb-2 text-gray-900">
           Welcome Back 👋
         </h2>
-        <p className="text-center text-gray-500 mb-8">
-          Log in to access your account
+        <p className="text-center text-gray-600 mb-8">
+          Log in to continue
         </p>
 
-        <form onSubmit={handleLogin} className="space-y-6">
+        <form onSubmit={handleLogin} className="space-y-5">
           {/* Email/Phone */}
           <div className="relative">
-            <Mail className="absolute left-3 top-3.5 text-gray-400 w-5 h-5" />
+            <Mail className="absolute left-3 top-3.5 text-gray-500 w-5 h-5" />
             <input
               type="text"
-              placeholder="example@gmail.com or +91xxxxxxxxxx"
+              placeholder="Email or Phone Number"
               value={identifier}
               onChange={(e) => setIdentifier(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm"
+              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none shadow-sm"
               required
             />
           </div>
 
           {/* Password */}
           <div className="relative">
-            <Lock className="absolute left-3 top-3.5 text-gray-400 w-5 h-5" />
+            <Lock className="absolute left-3 top-3.5 text-gray-500 w-5 h-5" />
             <input
               type="password"
-              placeholder="••••••••"
+              placeholder="Enter your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm"
+              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none shadow-sm"
               required
             />
           </div>
 
           {error && (
-            <p className="text-sm text-red-500 bg-red-100 p-2 rounded-md text-center">
+            <p className="text-sm text-red-600 bg-red-100 p-2 rounded-md text-center">
               {error}
             </p>
           )}
@@ -90,7 +97,7 @@ export default function LoginForm() {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             disabled={loading}
-            className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 rounded-lg font-semibold shadow-md hover:opacity-90 transition disabled:opacity-50"
+            className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 rounded-lg font-semibold shadow-md hover:shadow-lg transition disabled:opacity-50"
           >
             {loading ? (
               <span className="flex items-center justify-center gap-2">
@@ -104,14 +111,17 @@ export default function LoginForm() {
         </form>
 
         {/* Links */}
-        <div className="mt-6 flex justify-between text-sm">
+        <div className="mt-6 flex justify-between text-sm text-gray-600">
           <Link
             href="/forgot-password"
-            className="text-blue-600 hover:underline"
+            className="text-blue-600 hover:underline font-medium"
           >
             Forgot Password?
           </Link>
-          <Link href="/register" className="text-blue-600 hover:underline">
+          <Link
+            href="/register"
+            className="text-blue-600 hover:underline font-medium"
+          >
             Create Account
           </Link>
         </div>

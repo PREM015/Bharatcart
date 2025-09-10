@@ -54,3 +54,5 @@ temp.ts
 prisma/schema.prisma
 prisma/schema.prisma
 check.js
+.vscode/c_cpp_properties.json
+.vscode/launch.json
