@@ -1,5 +1,5 @@
 
-# 🛒 BharatCart – Fullstack E-Commerce Website
+# 🛒BharatCart – Fullstack E-Commerce Website
 
 BharatCart is a modern fullstack **E-Commerce platform** built with **Next.js 14 (App Router)**, **Prisma ORM**, and **Supabase (Postgres)**.  
 It supports user authentication, product management, cart, orders, and an admin panel to manage the store.
