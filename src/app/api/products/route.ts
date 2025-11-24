@@ -5,30 +5,45 @@ export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
 
-    const category = searchParams.get("category");
+    const categoryName = searchParams.get("category");
     const brand = searchParams.get("brand");
     const query = searchParams.get("q");
 
-    // Build Prisma filter
     const where: any = {};
 
-    if (category) {
-      where.category = { equals: category, mode: "insensitive" };
+    // FIX 1 — Convert category NAME → categoryId
+    if (categoryName) {
+      const category = await prisma.category.findFirst({
+        where: { name: { equals: categoryName, mode: "insensitive" } },
+      });
+
+      if (!category) {
+        return NextResponse.json([]); // no products for this category
+      }
+
+      where.categoryId = category.id;
     }
 
+    // FIX 2 — Brand filter
     if (brand) {
       where.brand = { equals: brand, mode: "insensitive" };
     }
 
+    // FIX 3 — Search by title or description
     if (query) {
       where.OR = [
-        { name: { contains: query, mode: "insensitive" } },
+        { title: { contains: query, mode: "insensitive" } },
         { description: { contains: query, mode: "insensitive" } },
       ];
     }
 
+    // FIX 4 — Return product + relations
     const products = await prisma.product.findMany({
       where,
+      include: {
+        category: true,
+        admin: { select: { storeName: true } },
+      },
       orderBy: { createdAt: "desc" },
       take: 50,
     });
@@ -36,9 +51,6 @@ export async function GET(req: Request) {
     return NextResponse.json(products);
   } catch (error) {
     console.error("❌ Error fetching products:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch products" },
-      { status: 500 }
-    );
+    return NextResponse.json([], { status: 200 }); // IMPORTANT: return array
   }
 }

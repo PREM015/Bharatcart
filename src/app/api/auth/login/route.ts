@@ -1,62 +1,96 @@
-import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/db';
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+import { NextResponse } from "next/server";
+import { prisma } from "@/lib/db";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 export async function POST(req: Request) {
   try {
-    const { identifier, password, mode } = await req.json();
-
-    // FIXED: Make mode optional or default to 'login'
-    if (mode && mode !== 'login') {
-      return NextResponse.json({ error: 'Invalid mode' }, { status: 400 });
+    // SAFELY READ JSON BODY
+    let body;
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json(
+        { error: "Invalid request body" },
+        { status: 400 }
+      );
     }
 
+    const { identifier, password, mode } = body;
+
+    // Default mode = login
+    if (mode && mode !== "login") {
+      return NextResponse.json(
+        { error: "Invalid mode" },
+        { status: 400 }
+      );
+    }
+
+    // Validate fields
     if (!identifier || !password) {
-      return NextResponse.json({ error: 'Missing credentials' }, { status: 400 });
+      return NextResponse.json(
+        { error: "Missing credentials" },
+        { status: 400 }
+      );
     }
 
-    // FIXED: Better error handling for JWT_SECRET
+    // Ensure JWT Secret exists
     if (!process.env.JWT_SECRET) {
-      console.error('JWT_SECRET is not set in environment variables');
-      return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
+      console.error("Missing JWT_SECRET!");
+      return NextResponse.json(
+        { error: "Server configuration error" },
+        { status: 500 }
+      );
     }
 
-    // Try to find user by email or phone
+    // Detect email OR phone
+    const isEmail = identifier.includes("@");
+
     const user = await prisma.user.findFirst({
-      where: {
-        OR: [
-          { email: identifier.toLowerCase() },
-          { phone: identifier }
-        ]
-      }
+      where: isEmail
+        ? { email: identifier.toLowerCase() }
+        : { phone: identifier }
     });
 
     if (!user) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+      return NextResponse.json(
+        { error: "User not found" },
+        { status: 404 }
+      );
     }
 
-    // Check password
+    // Check if user has password stored
+    if (!user.password) {
+      return NextResponse.json(
+        { error: "Account does not have a password. Use different login method." },
+        { status: 400 }
+      );
+    }
+
+    // Validate password
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      return NextResponse.json({ error: 'Invalid password' }, { status: 401 });
+      return NextResponse.json(
+        { error: "Invalid password" },
+        { status: 401 }
+      );
     }
 
     // Create JWT token
     const token = jwt.sign(
-      { 
-        id: user.id, 
-        email: user.email, 
-        phone: user.phone, 
-        isAdmin: user.isAdmin 
+      {
+        id: user.id,
+        email: user.email,
+        phone: user.phone,
+        isAdmin: user.isAdmin,
       },
-      process.env.JWT_SECRET as string,
-      { expiresIn: '7d' }
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
     );
 
-    // FIXED: Create response with cookie
+    // Create response
     const response = NextResponse.json({
-      message: 'Login successful',
+      message: "Login successful",
       token,
       user: {
         id: user.id,
@@ -64,23 +98,25 @@ export async function POST(req: Request) {
         email: user.email,
         phone: user.phone,
         avatar: user.avatar,
-        isAdmin: user.isAdmin
-      }
+        isAdmin: user.isAdmin,
+      },
     });
 
-    // FIXED: Set secure HTTP-only cookie
-    response.cookies.set('token', token, {
+    // Set secure HTTP-only cookie
+    response.cookies.set("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
       maxAge: 60 * 60 * 24 * 7, // 7 days
-      path: '/'
+      path: "/",
     });
 
     return response;
-
   } catch (error) {
-    console.error('Login error:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    console.error("Login error:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }
