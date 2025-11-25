@@ -3,7 +3,9 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getTokenPayload } from '@/utils/jwt';
-import { Admin, User } from '@prisma/client';
+import { PrismaClient, Admin, User } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 type AdminProfile = Admin & { user: User };
 
@@ -30,7 +32,6 @@ export default function AdminPage() {
                 const res = await fetch('/api/admin', {
                     headers: { Authorization: `Bearer ${token}` },
                 });
-
 
                 if (!res.ok) throw new Error('Not authorized');
 

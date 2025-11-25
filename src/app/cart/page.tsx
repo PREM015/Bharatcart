@@ -17,6 +17,7 @@ export default function CartPage() {
     { id: "2", name: "Another Product", price: 300, quantity: 2 },
   ]);
 
+  // Update quantity of a cart item
   const updateQuantity = (id: string, quantity: number) => {
     setCart((prev) =>
       prev.map((item) =>
@@ -25,10 +26,12 @@ export default function CartPage() {
     );
   };
 
+  // Remove an item from cart
   const removeItem = (id: string) => {
     setCart((prev) => prev.filter((item) => item.id !== id));
   };
 
+  // Calculate total price
   const total = cart.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
@@ -39,7 +42,7 @@ export default function CartPage() {
       <h1 className="text-2xl font-bold mb-6">Shopping Cart</h1>
 
       {cart.length === 0 ? (
-        <p className="text-gray-500">Your cart is empty.</p>
+        <p className="text-gray-500 text-center">Your cart is empty.</p>
       ) : (
         <div className="space-y-4">
           {cart.map((item) => (
@@ -48,14 +51,12 @@ export default function CartPage() {
               className="flex items-center justify-between border p-4 rounded-lg"
             >
               <div className="flex items-center gap-4">
-                {item.image && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="w-16 h-16 object-cover rounded"
-                  />
-                )}
+                {/* Show image or placeholder */}
+                <img
+                  src={item.image || "/ui/placeholder.png"}
+                  alt={item.name}
+                  className="w-16 h-16 object-cover rounded"
+                />
                 <div>
                   <h2 className="font-semibold">{item.name}</h2>
                   <p className="text-gray-600">₹{item.price}</p>
@@ -67,6 +68,7 @@ export default function CartPage() {
                   type="number"
                   value={item.quantity}
                   min={1}
+                  aria-label={`Quantity of ${item.name}`}
                   className="w-16 border rounded px-2 py-1"
                   onChange={(e) =>
                     updateQuantity(item.id, Number(e.target.value))
@@ -87,7 +89,10 @@ export default function CartPage() {
             <p className="text-lg font-bold">₹{total}</p>
           </div>
 
-          <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+          <button
+            onClick={() => alert("Checkout clicked!")}
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 mt-4"
+          >
             Checkout
           </button>
         </div>

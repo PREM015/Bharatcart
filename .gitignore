@@ -56,3 +56,5 @@ prisma/schema.prisma
 check.js
 .vscode/c_cpp_properties.json
 .vscode/launch.json
+
+/src/generated/prisma
