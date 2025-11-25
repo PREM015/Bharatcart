@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 
@@ -9,28 +10,29 @@ export async function GET(req: Request) {
     const brand = searchParams.get("brand");
     const query = searchParams.get("q");
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const where: any = {};
+    // Prisma "where" object
+    const where: Record<string, any> = {};
 
-    // FIX 1 — Convert category NAME → categoryId
+    // 1️⃣ Convert category NAME → categoryId
     if (categoryName) {
       const category = await prisma.category.findFirst({
         where: { name: { equals: categoryName, mode: "insensitive" } },
       });
 
       if (!category) {
-        return NextResponse.json([]); // no products for this category
+        // No products found for this category
+        return NextResponse.json([]);
       }
 
       where.categoryId = category.id;
     }
 
-    // FIX 2 — Brand filter
+    // 2️⃣ Brand filter
     if (brand) {
       where.brand = { equals: brand, mode: "insensitive" };
     }
 
-    // FIX 3 — Search by title or description
+    // 3️⃣ Search by title OR description
     if (query) {
       where.OR = [
         { title: { contains: query, mode: "insensitive" } },
@@ -38,20 +40,21 @@ export async function GET(req: Request) {
       ];
     }
 
-    // FIX 4 — Return product + relations
+    // 4️⃣ Fetch products + relations
     const products = await prisma.product.findMany({
       where,
       include: {
-        category: true,
-        admin: { select: { storeName: true } },
+        category: true, // include category details
+        admin: { select: { storeName: true } }, // include admin/store info
       },
       orderBy: { createdAt: "desc" },
-      take: 50,
+      take: 50, // limit to 50 results
     });
 
     return NextResponse.json(products);
   } catch (error) {
     console.error("❌ Error fetching products:", error);
-    return NextResponse.json([], { status: 200 }); // IMPORTANT: return array
+    // Return empty array even on error to avoid breaking frontend
+    return NextResponse.json([], { status: 200 });
   }
 }

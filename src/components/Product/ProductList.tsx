@@ -67,7 +67,8 @@ export default function ProductList() {
             brand: product.brand ?? '',
             rating: 0,
             discountPercentage: 0,
-            categoryId: product.category ?? '',
+         categoryName: product.category?.name ?? ''
+
           }}
         />
       ))}

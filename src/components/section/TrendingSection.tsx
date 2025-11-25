@@ -1,4 +1,3 @@
-
 'use client';
 
 import React from 'react';
@@ -10,7 +9,7 @@ const trendingProducts = [
     title: 'Bluetooth Speaker',
     description: 'Portable wireless speaker with deep bass and long battery life.',
     price: 1799,
-    image: '/images/products/speaker.jpg',
+    image: '/images/products/electronics/accessories/img1.webp', // updated path
     stock: 25,
     isNew: true,
     isFeatured: true,
@@ -24,7 +23,7 @@ const trendingProducts = [
     title: 'Fitness Smartwatch',
     description: 'Fitness tracker with heart-rate monitoring and GPS.',
     price: 3999,
-    image: '/images/products/watch.jpg',
+    image: '/images/products/accessories/watches/img1.jpg', // updated path
     stock: 40,
     isNew: true,
     isFeatured: false,
@@ -38,7 +37,7 @@ const trendingProducts = [
     title: 'Gaming Mouse',
     description: 'Ergonomic gaming mouse with customizable DPI and RGB lighting.',
     price: 1299,
-    image: '/images/products/mouse.jpg',
+    image: '/images/products/electronics/gaming/img1.webp', // updated path
     stock: 60,
     isNew: false,
     isFeatured: false,
@@ -52,7 +51,7 @@ const trendingProducts = [
     title: 'Cotton Kurta',
     description: 'Comfortable breathable cotton kurta for everyday wear.',
     price: 1099,
-    image: '/images/products/kurta.jpg',
+    image: '/images/products/clothing/men/ethnic/img1.webp', // updated path
     stock: 80,
     isNew: false,
     isFeatured: true,
@@ -66,7 +65,7 @@ const trendingProducts = [
     title: 'Ceramic Dinner Set',
     description: '12-piece ceramic dinner set with elegant finish.',
     price: 2499,
-    image: '/images/products/dinner-set.jpg',
+    image: '/images/products/home-appliances/kitchen/img1.webp', // updated path
     stock: 15,
     isNew: false,
     isFeatured: false,
@@ -80,7 +79,7 @@ const trendingProducts = [
     title: 'Laptop Stand',
     description: 'Adjustable aluminum laptop stand for improved ergonomics.',
     price: 899,
-    image: '/images/products/stand.jpg',
+    image: '/images/products/accessories/bags/img1.jpg', // updated path
     stock: 100,
     isNew: true,
     isFeatured: false,
@@ -115,5 +114,3 @@ const TrendingSection = () => {
 };
 
 export default TrendingSection;
-
-

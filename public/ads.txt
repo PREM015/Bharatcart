@@ -1,0 +1,3 @@
+# Ads.txt for programmatic advertising
+# Format: domain, publisher_id, relationship, certification_authority
+google.com, pub-0000000000000000, DIRECT, f08c47fec0942fa0

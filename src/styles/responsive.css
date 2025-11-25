@@ -1,0 +1,6 @@
+/* Responsive Utilities */
+@media (max-width: 768px) {
+  .responsive-class {
+    /* Mobile styles */
+  }
+}

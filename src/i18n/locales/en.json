@@ -1,0 +1,22 @@
+{
+  "common": {
+    "welcome": "Welcome",
+    "search": "Search",
+    "cart": "Cart",
+    "checkout": "Checkout",
+    "login": "Login",
+    "register": "Register"
+  },
+  "product": {
+    "addToCart": "Add to Cart",
+    "buyNow": "Buy Now",
+    "outOfStock": "Out of Stock",
+    "inStock": "In Stock"
+  },
+  "checkout": {
+    "shipping": "Shipping",
+    "payment": "Payment",
+    "review": "Review Order",
+    "placeOrder": "Place Order"
+  }
+}

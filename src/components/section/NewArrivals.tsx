@@ -1,4 +1,3 @@
-// src/components/section/NewArrivals.tsx
 'use client';
 
 import React from 'react';
@@ -10,7 +9,7 @@ const newArrivalProducts = [
     title: 'Bluetooth Neckband',
     description: 'Lightweight neckband with clear audio and long battery life.',
     price: 1499,
-    image: '/images/products/neckband.jpg',
+    image: '/images/products/electronics/accessories/img2.webp', // updated path
     stock: 25,
     isNew: true,
     isFeatured: true,
@@ -24,7 +23,7 @@ const newArrivalProducts = [
     title: "Women’s Handbag",
     description: 'Stylish faux-leather handbag with multiple compartments.',
     price: 2199,
-    image: '/images/products/handbag.jpg',
+    image: '/images/products/accessories/bags/img1.jpg', // updated path
     stock: 8,
     isNew: true,
     isFeatured: false,
@@ -38,7 +37,7 @@ const newArrivalProducts = [
     title: 'Fitness Smartwatch',
     description: 'Track workouts and health metrics with this durable smartwatch.',
     price: 3299,
-    image: '/images/products/smartwatch.jpg',
+    image: '/images/products/accessories/watches/img1.jpg', // updated path
     stock: 12,
     isNew: true,
     isFeatured: true,
@@ -52,7 +51,7 @@ const newArrivalProducts = [
     title: 'Air Purifier',
     description: 'Compact purifier with HEPA filter for clean indoor air.',
     price: 7599,
-    image: '/images/products/airpurifier.jpg',
+    image: '/images/products/home-appliances/kitchen/img1.webp', // updated path
     stock: 5,
     isNew: false,
     isFeatured: false,
@@ -66,7 +65,7 @@ const newArrivalProducts = [
     title: 'Hair Dryer',
     description: 'Fast-drying hair dryer with ionic technology to reduce frizz.',
     price: 1299,
-    image: '/images/products/hairdryer.jpg',
+    image: '/images/products/beauty/haircare/img1.png', // updated path
     stock: 30,
     isNew: false,
     isFeatured: false,
@@ -80,7 +79,7 @@ const newArrivalProducts = [
     title: 'Laptop Backpack',
     description: 'Padded laptop backpack with multiple pockets and USB charging port.',
     price: 1799,
-    image: '/images/products/backpack.jpg',
+    image: '/images/products/accessories/bags/img2.jpg', // updated path
     stock: 18,
     isNew: true,
     isFeatured: false,
@@ -115,4 +114,3 @@ const NewArrivals = () => {
 };
 
 export default NewArrivals;
- 
