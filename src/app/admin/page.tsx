@@ -3,11 +3,22 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getTokenPayload } from '@/utils/jwt';
-import { PrismaClient, Admin, User } from '@prisma/client';
 
-const prisma = new PrismaClient();
-
-type AdminProfile = Admin & { user: User };
+type AdminProfile = {
+  id: string;
+  userId: string;
+  storeName: string;
+  storeUrl?: string;
+  isVerified: boolean;
+  createdAt: string;
+  updatedAt: string;
+  user: {
+    id: string;
+    name: string;
+    email?: string;
+    phone?: string;
+  };
+};
 
 export default function AdminPage() {
     const router = useRouter();

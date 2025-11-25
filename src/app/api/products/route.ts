@@ -9,6 +9,7 @@ export async function GET(req: Request) {
     const brand = searchParams.get("brand");
     const query = searchParams.get("q");
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const where: any = {};
 
     // FIX 1 — Convert category NAME → categoryId
