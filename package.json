@@ -2,7 +2,7 @@
   "name": "bharatcart",
   "version": "1.0.0",
   "private": true,
-  "description": "<div align=\"center\">",
+  "description": "BharatCart - India's Premier E-commerce Platform",
   "homepage": "https://github.com/PREM015/ecommerce#readme",
   "bugs": {
     "url": "https://github.com/PREM015/ecommerce/issues"
@@ -19,16 +19,26 @@
     "start": "next start",
     "lint": "next lint",
     "type-check": "tsc --noEmit",
-    "seed": "ts-node prisma/seed.ts",
+
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
-    "prisma:studio": "prisma studio"
+    "prisma:studio": "prisma studio",
+
+    "prisma:seed": "tsx prisma/seed.ts",
+    "db:seed": "tsx prisma/seed.ts",
+    "seed": "tsx prisma/seed.ts",
+
+    "db:reset": "prisma migrate reset --force && tsx prisma/seed.ts",
+    "test:seed": "tsx prisma/test-seed.ts"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.19.0",
     "agora-rtc-sdk-ng": "^4.19.3",
     "axios": "^1.11.0",
-    "bcryptjs": "^3.0.2",
+    "bcryptjs": "^3.0.3",
     "cloudinary": "^2.7.0",
     "critters": "^0.0.23",
     "dotenv": "^17.2.1",
