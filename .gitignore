@@ -2,6 +2,8 @@
 p.py
 t.txt
 t.md
+full.txt
+full2.txt
 # dependencies
 /node_modules
 /.pnp

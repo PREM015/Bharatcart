@@ -1,0 +1,8 @@
+# variables.tf
+# TODO: Add Terraform configuration
+
+variable "environment" {
+  description = "Environment name"
+  type        = string
+  default     = "development"
+}

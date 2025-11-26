@@ -1,0 +1,7 @@
+#!/bin/bash
+# pre-push
+# TODO: Add implementation
+
+set -e
+
+echo "Running pre-push..."
