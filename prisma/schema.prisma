@@ -7978,6 +7978,24 @@ model AIRecommendation {
   
   @@map("ai_recommendations")
 }
+model PersonalShopperSession {
+  id        String   @id @default(cuid())
+  userId    String   @db.VarChar(50)
+  
+  // Session Details
+  sessionData Json?      @db.JsonB
+  startedAt   DateTime   @default(now()) @db.Timestamptz(3)
+  endedAt     DateTime?  @db.Timestamptz(3)
+  
+  // Status & Notes
+  status      String?    @db.VarChar(50)
+  notes       String?    @db.Text
+  
+  @@index([userId])
+  
+  @@map("personal_shopper_sessions")
+}
+
 
 model ChatbotConversation {
   id        String  @id @default(cuid())
