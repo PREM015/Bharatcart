@@ -1,0 +1,16 @@
+{
+  "_description": "API rate limiting - Prevents abuse and DDoS attacks",
+  "_purpose": "Protects backend services from excessive requests",
+  "global": {
+    "windowMs": 900000,
+    "maxRequests": 100,
+    "message": "Too many requests"
+  },
+  "endpoints": {
+    "/api/auth/login": {"windowMs": 900000, "maxRequests": 5},
+    "/api/auth/register": {"windowMs": 3600000, "maxRequests": 3},
+    "/api/products": {"windowMs": 60000, "maxRequests": 60},
+    "/api/cart": {"windowMs": 60000, "maxRequests": 30},
+    "/api/orders": {"windowMs": 60000, "maxRequests": 10}
+  }
+}
