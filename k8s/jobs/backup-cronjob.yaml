@@ -1,0 +1,81 @@
+# Database Backup CronJob
+# Purpose: Automated database backups
+# Description: Creates daily PostgreSQL and MongoDB backups
+
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: db-backup
+  namespace: default
+spec:
+  schedule: "0 2 * * *"  # Daily at 2 AM
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: postgres-backup
+            image: postgres:15-alpine
+            command:
+            - /bin/sh
+            - -c
+            - |
+              TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+              pg_dump -h postgres -U $POSTGRES_USER $POSTGRES_DB | gzip > /backup/postgres_$TIMESTAMP.sql.gz
+              aws s3 cp /backup/postgres_$TIMESTAMP.sql.gz s3://bharatcart-backups/postgres/
+            env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: username
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: password
+            - name: POSTGRES_DB
+              value: "bharatcart"
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: aws-secret
+                  key: access-key-id
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aws-secret
+                  key: secret-access-key
+            volumeMounts:
+            - name: backup-storage
+              mountPath: /backup
+          - name: mongodb-backup
+            image: mongo:7
+            command:
+            - /bin/sh
+            - -c
+            - |
+              TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+              mongodump --host mongodb --username $MONGO_USER --password $MONGO_PASSWORD --db bharatcart --archive=/backup/mongodb_$TIMESTAMP.archive --gzip
+              aws s3 cp /backup/mongodb_$TIMESTAMP.archive s3://bharatcart-backups/mongodb/
+            env:
+            - name: MONGO_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-secret
+                  key: username
+            - name: MONGO_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-secret
+                  key: password
+            volumeMounts:
+            - name: backup-storage
+              mountPath: /backup
+          restartPolicy: OnFailure
+          volumes:
+          - name: backup-storage
+            emptyDir: {}
