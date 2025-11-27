@@ -1,0 +1,43 @@
+# Docker Compose Override - Development
+# Purpose: Local development overrides for docker-compose.yml
+# Description: Volume mounts, debugging ports, hot reload
+
+version: '3.8'
+
+services:
+  api:
+    volumes:
+      - ../../src:/app/src
+      - ../../package.json:/app/package.json
+      - ../../tsconfig.json:/app/tsconfig.json
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - DEBUG=*
+      - LOG_LEVEL=debug
+    ports:
+      - "3000:3000"
+      - "9229:9229"  # Node.js debugging port
+    command: npm run dev
+
+  worker:
+    volumes:
+      - ../../src:/app/src
+    environment:
+      - NODE_ENV=development
+    command: npm run worker:dev
+
+  postgres:
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_LOG_STATEMENT=all
+
+  redis:
+    ports:
+      - "6379:6379"
+    command: redis-server --loglevel debug
+
+  mongodb:
+    ports:
+      - "27017:27017"
