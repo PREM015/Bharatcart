@@ -1,0 +1,14 @@
+# Sequence Diagrams
+# Purpose: Interaction diagrams showing message flow
+# Description: Detailed sequence of operations between components
+
+## Contents
+- Payment processing sequence
+- Order fulfillment sequence
+- API authentication sequence
+- Webhook handling sequence
+
+## Tools
+- Mermaid.js
+- PlantUML
+- SequenceDiagram.org

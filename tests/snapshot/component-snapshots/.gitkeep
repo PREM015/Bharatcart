@@ -1,0 +1,9 @@
+# Component Snapshot Tests
+# Purpose: Detect unintended UI changes
+# Description: Jest snapshot testing for React components
+
+## Usage
+npm run test:snapshot
+
+## Update Snapshots
+npm run test:snapshot -- -u

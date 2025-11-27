@@ -1,0 +1,15 @@
+# Flow Diagrams
+# Purpose: User flows and business process diagrams
+# Description: Visualizations of user journeys and workflows
+
+## Contents
+- User registration flow
+- Checkout flow
+- Order processing flow
+- Return/refund flow
+- Authentication flow
+
+## Tools
+- Mermaid.js
+- Figma
+- Whimsical

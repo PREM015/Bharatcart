@@ -1,0 +1,10 @@
+# OpenAPI Validation Tests
+# Purpose: Validates API responses against OpenAPI schema
+# Description: Ensures API adheres to specification
+
+## Tools
+- openapi-validator
+- swagger-mock-validator
+
+## Usage
+npm run test:openapi

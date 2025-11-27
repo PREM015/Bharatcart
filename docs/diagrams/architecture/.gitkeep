@@ -1,0 +1,15 @@
+# Architecture Diagrams
+# Purpose: System architecture visualizations
+# Description: Store Mermaid diagrams, PlantUML, or images showing system architecture
+
+## Contents
+- High-level architecture
+- Component diagrams
+- Deployment diagrams
+- Infrastructure diagrams
+
+## Tools
+- Mermaid.js (recommended)
+- PlantUML
+- Draw.io
+- Lucidchart

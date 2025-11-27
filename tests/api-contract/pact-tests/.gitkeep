@@ -1,0 +1,9 @@
+# Pact Contract Tests
+# Purpose: Consumer-driven contract testing
+# Description: Ensures API compatibility between services
+
+## Setup
+npm install --save-dev @pact-foundation/pact
+
+## Usage
+npm run test:contract
