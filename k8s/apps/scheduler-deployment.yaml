@@ -1,0 +1,43 @@
+# Scheduler Deployment
+# Purpose: Runs scheduled tasks and cron jobs
+# Description: Handles periodic tasks like reports, cleanups, syncs
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bharatcart-scheduler
+  namespace: default
+  labels:
+    app: bharatcart
+    component: scheduler
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bharatcart
+      component: scheduler
+  template:
+    metadata:
+      labels:
+        app: bharatcart
+        component: scheduler
+    spec:
+      containers:
+      - name: scheduler
+        image: bharatcart/scheduler:latest
+        command: ["npm", "run", "scheduler"]
+        env:
+        - name: NODE_ENV
+          value: "production"
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: database-secret
+              key: url
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"

@@ -1,0 +1,51 @@
+# Worker Deployment
+# Purpose: Background job processor for async tasks
+# Description: Handles queued jobs like emails, notifications, image processing
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bharatcart-worker
+  namespace: default
+  labels:
+    app: bharatcart
+    component: worker
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: bharatcart
+      component: worker
+  template:
+    metadata:
+      labels:
+        app: bharatcart
+        component: worker
+    spec:
+      containers:
+      - name: worker
+        image: bharatcart/worker:latest
+        command: ["npm", "run", "worker"]
+        env:
+        - name: NODE_ENV
+          value: "production"
+        - name: QUEUE_URL
+          valueFrom:
+            secretKeyRef:
+              name: queue-secret
+              key: url
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - "pgrep -f worker"
+          initialDelaySeconds: 30
+          periodSeconds: 10
