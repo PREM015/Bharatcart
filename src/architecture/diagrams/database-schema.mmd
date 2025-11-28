@@ -1,0 +1,156 @@
+# Database Schema
+
+```mermaid
+erDiagram
+    users ||--o{ orders : places
+    users ||--o{ addresses : has
+    users ||--o{ cart_items : has
+    users ||--o{ reviews : writes
+    users ||--o{ payment_methods : has
+
+    products ||--o{ order_items : contains
+    products ||--o{ cart_items : contains
+    products ||--o{ reviews : has
+    products }o--|| categories : belongs_to
+    products }o--|| brands : belongs_to
+    products ||--o{ product_images : has
+    products ||--o{ inventory_items : has
+
+    orders ||--o{ order_items : contains
+    orders ||--|| shipping_addresses : ships_to
+    orders ||--o{ order_status_history : tracks
+    orders ||--o{ payments : has
+
+    categories ||--o{ categories : parent_of
+
+    users {
+        int id PK
+        string email UK
+        string password_hash
+        string name
+        string role
+        datetime created_at
+        datetime last_login
+    }
+
+    products {
+        int id PK
+        string name
+        text description
+        int price
+        int category_id FK
+        int brand_id FK
+        int stock_quantity
+        boolean is_active
+        datetime created_at
+    }
+
+    orders {
+        int id PK
+        int user_id FK
+        int subtotal
+        int shipping_cost
+        int tax_amount
+        int total
+        string status
+        datetime created_at
+    }
+
+    order_items {
+        int id PK
+        int order_id FK
+        int product_id FK
+        int quantity
+        int price
+        int discount
+    }
+
+    categories {
+        int id PK
+        string name
+        string slug UK
+        int parent_id FK
+        int sort_order
+    }
+
+    cart_items {
+        int id PK
+        int user_id FK
+        int product_id FK
+        int quantity
+        datetime created_at
+    }
+
+    addresses {
+        int id PK
+        int user_id FK
+        string address_line1
+        string city
+        string state
+        string postal_code
+        string country
+        boolean is_default
+    }
+
+    reviews {
+        int id PK
+        int user_id FK
+        int product_id FK
+        int rating
+        text comment
+        datetime created_at
+    }
+
+    payments {
+        int id PK
+        int order_id FK
+        string gateway
+        string transaction_id
+        int amount
+        string status
+        datetime created_at
+    }
+
+    inventory_items {
+        int id PK
+        int product_id FK
+        int warehouse_id FK
+        int quantity_on_hand
+        int quantity_available
+        int quantity_reserved
+    }
+
+    brands {
+        int id PK
+        string name
+        string slug UK
+        text description
+    }
+
+    product_images {
+        int id PK
+        int product_id FK
+        string url
+        boolean is_primary
+        int sort_order
+    }
+```
+
+## Database Design Principles
+
+### Normalization
+- 3NF (Third Normal Form) applied
+- Reduced data redundancy
+- Improved data integrity
+
+### Indexing Strategy
+- Primary keys: Clustered B-tree indexes
+- Foreign keys: Non-clustered indexes
+- Search fields: Full-text indexes
+- Frequently queried columns: Composite indexes
+
+### Performance Optimizations
+- Denormalization for read-heavy tables
+- Materialized views for analytics
+- Partitioning for large tables
+- Connection pooling

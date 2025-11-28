@@ -1,0 +1,153 @@
+# Sequence Diagrams
+
+## Order Checkout Flow
+
+```mermaid
+sequenceDiagram
+    actor Customer
+    participant Frontend
+    participant API
+    participant AuthService
+    participant CartService
+    participant OrderService
+    participant PaymentService
+    participant InventoryService
+    participant NotificationService
+    participant Queue
+
+    Customer->>Frontend: Click Checkout
+    Frontend->>API: POST /checkout
+    API->>AuthService: Validate Session
+    AuthService-->>API: Session Valid
+
+    API->>CartService: Get Cart Items
+    CartService-->>API: Cart Data
+
+    API->>InventoryService: Check Stock Availability
+    InventoryService-->>API: Stock Available
+
+    API->>OrderService: Create Order (Pending)
+    OrderService-->>API: Order Created
+
+    API->>PaymentService: Process Payment
+    PaymentService->>PaymentGateway: Charge Card
+    PaymentGateway-->>PaymentService: Payment Success
+
+    PaymentService-->>API: Payment Confirmed
+
+    API->>OrderService: Update Order Status (Confirmed)
+    OrderService-->>API: Updated
+
+    API->>InventoryService: Reserve Stock
+    InventoryService-->>API: Stock Reserved
+
+    API->>Queue: Publish Order Confirmed Event
+    Queue->>NotificationService: Process Event
+    NotificationService->>Customer: Send Confirmation Email
+
+    API-->>Frontend: Order Success
+    Frontend-->>Customer: Show Confirmation
+```
+
+## User Authentication Flow
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant Frontend
+    participant API
+    participant AuthService
+    participant Database
+    participant SessionStore
+
+    User->>Frontend: Enter Credentials
+    Frontend->>API: POST /auth/login
+    API->>AuthService: Validate Credentials
+    AuthService->>Database: Query User
+    Database-->>AuthService: User Data
+
+    AuthService->>AuthService: Verify Password Hash
+    AuthService->>AuthService: Generate Access Token
+    AuthService->>AuthService: Generate Refresh Token
+
+    AuthService->>SessionStore: Store Session
+    SessionStore-->>AuthService: Stored
+
+    AuthService->>Database: Update Last Login
+    Database-->>AuthService: Updated
+
+    AuthService-->>API: Tokens Generated
+    API-->>Frontend: Return Tokens
+    Frontend-->>User: Login Success
+```
+
+## Product Search Flow
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant Frontend
+    participant API
+    participant SearchEngine
+    participant Cache
+    participant Database
+
+    User->>Frontend: Enter Search Query
+    Frontend->>API: GET /search?q=laptop
+    
+    API->>Cache: Check Cache
+    Cache-->>API: Cache Miss
+
+    API->>SearchEngine: Full-Text Search
+    SearchEngine-->>API: Search Results
+
+    API->>Database: Get Product Details
+    Database-->>API: Product Data
+
+    API->>API: Apply Filters & Sorting
+    API->>API: Calculate Pagination
+
+    API->>Cache: Store Results
+    Cache-->>API: Cached
+
+    API-->>Frontend: Return Results
+    Frontend-->>User: Display Products
+```
+
+## Payment Processing Flow
+
+```mermaid
+sequenceDiagram
+    actor Customer
+    participant Frontend
+    participant API
+    participant PaymentService
+    participant FraudDetection
+    participant PaymentGateway
+    participant Database
+    participant Queue
+
+    Customer->>Frontend: Submit Payment
+    Frontend->>API: POST /payments
+    
+    API->>PaymentService: Process Payment
+    PaymentService->>FraudDetection: Check Fraud
+    FraudDetection-->>PaymentService: Risk Score: Low
+
+    PaymentService->>PaymentGateway: Authorize Payment
+    PaymentGateway-->>PaymentService: Authorization Success
+
+    PaymentService->>Database: Save Transaction
+    Database-->>PaymentService: Saved
+
+    PaymentService->>PaymentGateway: Capture Payment
+    PaymentGateway-->>PaymentService: Capture Success
+
+    PaymentService->>Database: Update Transaction Status
+    Database-->>PaymentService: Updated
+
+    PaymentService->>Queue: Publish Payment Success Event
+    PaymentService-->>API: Payment Complete
+    API-->>Frontend: Success Response
+    Frontend-->>Customer: Payment Confirmed
+```

@@ -1,0 +1,114 @@
+# System Architecture Diagram
+
+```mermaid
+graph TB
+    subgraph "Client Layer"
+        Web[Web App<br/>React/Next.js]
+        Mobile[Mobile App<br/>React Native]
+        Admin[Admin Panel<br/>React]
+    end
+
+    subgraph "API Gateway Layer"
+        Gateway[API Gateway<br/>Rate Limiting, Auth]
+    end
+
+    subgraph "Application Layer"
+        Auth[Auth Service<br/>JWT, OAuth, Passkey]
+        Products[Product Service]
+        Orders[Order Service]
+        Payments[Payment Service]
+        Inventory[Inventory Service]
+        Shipping[Shipping Service]
+        Notifications[Notification Service]
+    end
+
+    subgraph "Data Layer"
+        Postgres[(PostgreSQL<br/>Primary DB)]
+        Redis[(Redis<br/>Cache & Sessions)]
+        S3[(S3<br/>Media Storage)]
+        Search[(Typesense<br/>Search Engine)]
+    end
+
+    subgraph "External Services"
+        PaymentGW[Payment Gateways<br/>Stripe, Razorpay]
+        EmailSvc[Email Service<br/>SendGrid]
+        SMSvc[SMS Service<br/>Twilio]
+        ShipSvc[Shipping APIs<br/>FedEx, DHL]
+    end
+
+    subgraph "Message Queue"
+        Queue[Bull Queue<br/>Redis]
+    end
+
+    Web --> Gateway
+    Mobile --> Gateway
+    Admin --> Gateway
+
+    Gateway --> Auth
+    Gateway --> Products
+    Gateway --> Orders
+    Gateway --> Payments
+
+    Orders --> Inventory
+    Orders --> Payments
+    Orders --> Shipping
+    Orders --> Notifications
+
+    Auth --> Postgres
+    Products --> Postgres
+    Orders --> Postgres
+    Payments --> Postgres
+    Inventory --> Postgres
+
+    Products --> Redis
+    Auth --> Redis
+    Products --> Search
+
+    Payments --> PaymentGW
+    Notifications --> EmailSvc
+    Notifications --> SMSvc
+    Shipping --> ShipSvc
+
+    Products --> S3
+    Orders --> Queue
+    Payments --> Queue
+    Notifications --> Queue
+
+    classDef client fill:#e1f5ff
+    classDef service fill:#fff4e1
+    classDef data fill:#f0e1ff
+    classDef external fill:#e1ffe1
+
+    class Web,Mobile,Admin client
+    class Auth,Products,Orders,Payments,Inventory,Shipping,Notifications service
+    class Postgres,Redis,S3,Search data
+    class PaymentGW,EmailSvc,SMSvc,ShipSvc external
+```
+
+## System Components
+
+### Frontend Applications
+- **Web App**: Customer-facing e-commerce website
+- **Mobile App**: Native mobile applications (iOS/Android)
+- **Admin Panel**: Back-office management system
+
+### Backend Services
+- **Auth Service**: Authentication & authorization
+- **Product Service**: Product catalog management
+- **Order Service**: Order processing & management
+- **Payment Service**: Payment processing
+- **Inventory Service**: Stock management
+- **Shipping Service**: Shipping & fulfillment
+- **Notification Service**: Email, SMS, push notifications
+
+### Data Stores
+- **PostgreSQL**: Primary relational database
+- **Redis**: Caching & session storage
+- **S3**: Media file storage
+- **Typesense**: Full-text search engine
+
+### External Integrations
+- **Payment Gateways**: Stripe, Razorpay, PayPal
+- **Email Provider**: SendGrid, AWS SES
+- **SMS Provider**: Twilio, MSG91
+- **Shipping APIs**: FedEx, UPS, DHL
